@@ -1,21 +1,40 @@
-namespace EmailSender
+using EmailSender.Infrastructure;
+using System.Configuration;
+
+namespace EmailSender;
+
+public class Worker : BackgroundService
 {
-    public class Worker : BackgroundService
+    private readonly ILogger<Worker> _logger;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IConfiguration _configuration;
+
+    public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider, IConfiguration configuration)
     {
-        private readonly ILogger<Worker> _logger;
+        _logger = logger;
+        _serviceProvider = serviceProvider;
+        _configuration = configuration;
+    }
 
-        public Worker(ILogger<Worker> logger)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
         {
-            _logger = logger;
-        }
+            _logger.LogInformation("EmailSender running at: {time}", DateTimeOffset.Now);
+            var emailConfig = _configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            while (!stoppingToken.IsCancellationRequested)
+            using (var scope = _serviceProvider.CreateScope())
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(1000, stoppingToken);
+                IMailSender mailsender =
+                    scope.ServiceProvider.GetRequiredService<IMailSender>();
+                var message = new Message(new string[] { "IncredibleEmailSender@gmail.com" }, "Hi", "All you need is mail!");
+                mailsender.SendEmail(message);
             }
+
+
+            await Task.Delay(5000, stoppingToken);
         }
     }
 }

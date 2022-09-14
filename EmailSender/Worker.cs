@@ -1,14 +1,19 @@
+using EmailSender.Infrastructure;
+using System.Configuration;
+
 namespace EmailSender;
 
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IConfiguration _configuration;
 
-    public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider)
+    public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider, IConfiguration configuration)
     {
         _logger = logger;
         _serviceProvider = serviceProvider;
+        _configuration = configuration;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -16,6 +21,10 @@ public class Worker : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             _logger.LogInformation("EmailSender running at: {time}", DateTimeOffset.Now);
+            var emailConfig = _configuration
+                .GetSection("EmailConfiguration")
+                .Get<EmailConfiguration>();
+
             using (var scope = _serviceProvider.CreateScope())
             {
                 IMailSender mailsender =
@@ -23,6 +32,7 @@ public class Worker : BackgroundService
                 var message = new Message(new string[] { "IncredibleEmailSender@gmail.com" }, "Hi", "All you need is mail!");
                 mailsender.SendEmail(message);
             }
+
 
             await Task.Delay(5000, stoppingToken);
         }

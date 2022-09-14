@@ -368,3 +368,5 @@ YogurtCleaningDataLayerTests/YogurtCleaning.DataLayer.Tests.v3.ncrunchproject
 YogurtCleaning.Tests/YogurtCleaning.API.Tests.v3.ncrunchproject
 
 YogutrCleaning/YogurtCleaning.API.v3.ncrunchproject
+
+EmailSender/appsettings.json

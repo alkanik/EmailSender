@@ -1,5 +1,9 @@
 using EmailSender;
+using EmailSender.Infrastructure;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using NLog.Extensions.Logging;
+using System.Configuration;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .UseWindowsService(options =>
@@ -15,6 +19,12 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddHostedService<Worker>();
+        services.AddScoped<IMailSender, MailSender>();
+        //var emailConfig = Configuration
+        //.GetSection("EmailConfiguration")
+        //.Get<EmailConfiguration>();
+        //builder.Services.AddSingleton(emailConfig);
+
     })
     .Build();
 

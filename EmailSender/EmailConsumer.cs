@@ -1,7 +1,5 @@
 ﻿using IncredibleBackendContracts.Events;
-using MailKit;
 using MassTransit;
-using NETCore.MailKit.Core;
 
 namespace EmailSender;
 

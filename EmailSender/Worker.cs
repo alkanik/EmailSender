@@ -1,5 +1,4 @@
 using EmailSender.Infrastructure;
-using System.Configuration;
 
 namespace EmailSender;
 

@@ -2,12 +2,8 @@ using EmailSender;
 using EmailSender.Infrastructure;
 using IncredibleBackend.Messaging.Extentions;
 using IncredibleBackendContracts.Constants;
-using IncredibleBackendContracts.Events;
 using MassTransit;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using NLog.Extensions.Logging;
-using System.Configuration;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .UseWindowsService(options =>

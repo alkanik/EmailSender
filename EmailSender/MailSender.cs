@@ -1,6 +1,6 @@
 ﻿using EmailSender.Infrastructure;
-using Microsoft.Extensions.Options;
 using MailKit.Net.Smtp;
+using Microsoft.Extensions.Options;
 using MimeKit;
 
 namespace EmailSender;

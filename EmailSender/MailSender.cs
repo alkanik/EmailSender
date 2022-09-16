@@ -8,15 +8,17 @@ namespace EmailSender;
 public class MailSender : IMailSender
 {
     private readonly EmailConfiguration _emailConfig;
-    public MailSender(IOptions<EmailConfiguration> emailConfig)
+    private readonly ILogger<MailSender> _logger;
+
+    public MailSender(IOptions<EmailConfiguration> emailConfig, ILogger<MailSender> logger)
     {
         _emailConfig = emailConfig.Value;
+        _logger = logger;
     }
-    public void SendEmail(Message message)
+    public async Task SendEmail(Message message)
     {
         var emailMessage = CreateEmailMessage(message);
-
-        Send(emailMessage);
+        await Send(emailMessage);
     }
 
     private MimeMessage CreateEmailMessage(Message message)
@@ -30,7 +32,7 @@ public class MailSender : IMailSender
         return emailMessage;
     }
 
-    private void Send(MimeMessage mailMessage)
+    private async Task Send(MimeMessage mailMessage)
     {
         using (var client = new SmtpClient())
         {
@@ -40,11 +42,11 @@ public class MailSender : IMailSender
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
                 client.Authenticate(_emailConfig.UserName, _emailConfig.Password);
 
-                client.Send(mailMessage);
+                await client.SendAsync(mailMessage);
             }
-            catch
+            catch (Exception ex)
             {
-                //log an error message or throw an exception or both.
+                _logger.LogError(ex.Message);
                 throw;
             }
             finally

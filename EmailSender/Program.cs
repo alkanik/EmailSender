@@ -1,5 +1,9 @@
 using EmailSender;
 using EmailSender.Infrastructure;
+using IncredibleBackend.Messaging.Extentions;
+using IncredibleBackendContracts.Constants;
+using IncredibleBackendContracts.Events;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NLog.Extensions.Logging;
@@ -30,6 +34,17 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.Configure<EmailConfiguration>(configuration.GetSection("EmailConfiguration"));
         services.AddHostedService<Worker>();
         services.AddScoped<IMailSender, MailSender>();
+        services.RegisterConsumersAndProducers((config) =>
+        {
+            config.AddConsumer<EmailConsumer>();
+        }, (cfg, ctx) =>
+        {
+            cfg.ReceiveEndpoint(RabbitEndpoint.EmailCreate, c =>
+            {
+                c.ConfigureConsumer<EmailConsumer>(ctx);
+            });
+        }, null
+        );
     })
     .Build();
 

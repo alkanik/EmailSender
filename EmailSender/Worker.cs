@@ -18,9 +18,10 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        _logger.LogInformation("EmailSender running at: {time}", DateTimeOffset.Now);
+
         while (!stoppingToken.IsCancellationRequested)
-        {
-            _logger.LogInformation("EmailSender running at: {time}", DateTimeOffset.Now);
+        { 
             var emailConfig = _configuration
                 .GetSection("EmailConfiguration")
                 .Get<EmailConfiguration>();
@@ -31,6 +32,7 @@ public class Worker : BackgroundService
                     scope.ServiceProvider.GetRequiredService<IMailSender>();
                 var message = new Message(new string[] { "IncredibleEmailSender@gmail.com" }, "Hi", "All you need is mail!");
                 mailsender.SendEmail(message);
+                _logger.LogInformation("EmailSender send a mail at: {time}", DateTimeOffset.Now);
             }
 
 

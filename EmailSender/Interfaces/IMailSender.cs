@@ -2,5 +2,5 @@
 
 public interface IMailSender
 {
-    void SendEmail(Message message);
+    Task SendEmail(Message message);
 }

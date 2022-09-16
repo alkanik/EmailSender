@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="IncredibleBackend" Version="2.2.1" />
-    <PackageReference Include="IncredibleBackend.Rmq" Version="1.1.4" />
+    <PackageReference Include="IncredibleBackend" Version="2.2.2" />
+    <PackageReference Include="IncredibleBackend.Rmq" Version="1.1.5" />
     <PackageReference Include="MassTransit" Version="8.0.6" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.0" />

@@ -3,7 +3,12 @@ using EmailSender.Infrastructure;
 using IncredibleBackend.Messaging.Extentions;
 using IncredibleBackendContracts.Constants;
 using MassTransit;
+using Microsoft.AspNetCore.Builder;
+using NLog;
 using NLog.Extensions.Logging;
+
+var builder = WebApplication.CreateBuilder(args);
+LogManager.Configuration.Variables[$"{builder.Environment: LOG_DIRECTORY}"] = "Logs";
 
 IHost host = Host.CreateDefaultBuilder(args)
     .UseWindowsService(options =>
@@ -13,17 +18,16 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureLogging((hostContext, logging) =>
     {
         logging.ClearProviders();
-        logging.SetMinimumLevel(LogLevel.Trace);
-        logging.AddNLog(hostContext.Configuration, new NLogProviderOptions() { LoggingConfigurationSectionName = "NLog" });
+        logging.AddNLog();
     })
-    .ConfigureAppConfiguration((hostContext, configBuilder) =>
-    {
-        configBuilder
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json")
-            .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-            .Build();
-    })
+    //.ConfigureAppConfiguration((hostContext, configBuilder) =>
+    //{
+    //    configBuilder
+    //        .SetBasePath(Directory.GetCurrentDirectory())
+    //        .AddJsonFile("appsettings.json")
+    //        .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    //        .Build();
+    //})
     .ConfigureServices((hostContext, services) =>
     {
         IConfiguration configuration = hostContext.Configuration;

@@ -20,14 +20,6 @@ IHost host = Host.CreateDefaultBuilder(args)
         logging.ClearProviders();
         logging.AddNLog();
     })
-    //.ConfigureAppConfiguration((hostContext, configBuilder) =>
-    //{
-    //    configBuilder
-    //        .SetBasePath(Directory.GetCurrentDirectory())
-    //        .AddJsonFile("appsettings.json")
-    //        .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-    //        .Build();
-    //})
     .ConfigureServices((hostContext, services) =>
     {
         IConfiguration configuration = hostContext.Configuration;
